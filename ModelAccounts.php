@@ -1,52 +1,49 @@
 <?php
 /**
- *	Manage the table accounts
-
+ *	Manage the table users
  */
 
-class ModelAccounts{
+class ModelUsers{
 
-    var $accountsTable;
+    var $users;
     var $element;
     var $list = array();
 
     /**
      * Constructor
-     * @param pdo link $link
      */
-    public function __construct($link){
-        $this->accountsTable = '`accounts`';
-        $this->link = $link;
+    public function __construct($dbConnexion){
+        $this->users = '`users`';
+        $this->dbConnexion = $dbConnexion;
         $this->element = array();
         $this->list = array();
     }
 
     /**
-     * Add a row in accounts
+     * Add a row in users
      * @param array data
      */
     function add($data){
-
-        $query = "INSERT INTO $this->accountsTable  (id_user, company, url, address, country_code, postcode, phone, api_key, api_secret, create_time, validated_time)
+        //print_r($data);
+        $query = "INSERT INTO $this->users  ( firstname, lastname, email, password, create_time, update_time)
 		VALUES (
-			:id_user, 
-			:company, 
-			:url, 
-			:address, 
-			:country_code, 
-			:postcode, 
-			:phone, 
-			:api_key, 
-			:api_secret, 
-			:create_time, 
-			:validated_time)";
-        $q = $this->link->prepare($query);
+			:firstname, 
+			:lastname, 
+			:email, 
+			:password, 
+			NOW(), 
+			NOW())";
+        $q = $this->dbConnexion->prepare($query);
 
-
-        if ($q->execute(array(':id_user' => $data['id_user'], ':company' => $data['company'], ':url' => $data['url'], ':address' => $data['address'], ':country_code' => $data['country_code'], ':postcode' => $data['postcode'], ':phone' => $data['phone'], ':api_key' => $data['api_key'], ':api_secret' => $data['api_secret'], ':create_time' => $data['create_time'], ':validated_time' => $data['validated_time']))){
-            return ($this->link->lastInsertId());
+        if ($q->execute(array(  ':firstname' => $data['firstname'],
+            ':lastname' => $data['lastname'],
+            ':email' => $data['email'],
+            ':password' => password_hash($data['password'], PASSWORD_DEFAULT)))){
+            return ($this->dbConnexion->lastInsertId());
         }
         else{
+            //print_r($this->dbConnexion->errorInfo());
+            //print_r($q->errorInfo());
             return(0);
         }
     }
@@ -54,33 +51,29 @@ class ModelAccounts{
 
 
     /**
-     * Update a row in accounts
+     * Update a row in users
      * @param array data
      */
     function update($data){
 
-        $query = "UPDATE $this->accountsTable SET 
-		`company` = :company, 
-		`url` = :url, 
-		`address` = :address, 
-		`country_code` = :country_code, 
-		`postcode` = :postcode, 
-		`phone` = :phone, 
-		`api_key` = :api_key, 
-		`api_secret` = :api_secret, 
-		`create_time` = :create_time, 
-		`validated_time` = :validated_time
-	WHERE id_user = :id_user ";
-        //echo $query;
-        $q = $this->link->prepare($query);
+        $query = "UPDATE $this->users SET 
+		`firstname` = :firstname, 
+		`lastname` = :lastname, 
+		`email` = :email, 
+		`password` = :password,  
+		`update_time` = NOW()
+	WHERE id = :id ";
 
+        $q = $this->dbConnexion->prepare($query);
 
-        if ($q->execute(array(':id_user' => $data['id_user'], ':company' => $data['company'], ':url' => $data['url'], ':address' => $data['address'], ':country_code' => $data['country_code'], ':postcode' => $data['postcode'], ':phone' => $data['phone'], ':api_key' => $data['api_key'], ':api_secret' => $data['api_secret'], ':create_time' => $data['create_time'], ':validated_time' => $data['validated_time'] ))){
-            //echo 'A';
+        if ($q->execute(array(  ':firstname' => $data['firstname'],
+            ':lastname' => $data['lastname'],
+            ':email' => $data['email'],
+            ':password' => password_hash($data['password'], PASSWORD_DEFAULT),
+            ':id' => $data['id_user'] ))){
             return (1);
         }
         else{
-
             return(0);
         }
     }
@@ -88,13 +81,43 @@ class ModelAccounts{
 
 
     /**
-     * Delete a row in accounts
+     * Update password for one row
+     * @param array data
+     */
+    function updatePassword($data){
+
+        $query = "UPDATE $this->users SET 
+		`password` = :password,  
+		`update_time` = NOW()
+	    WHERE id = :id ";
+
+        $q = $this->dbConnexion->prepare($query);
+
+        if ($q->execute(array(
+                ':password' => password_hash($data['password'], PASSWORD_DEFAULT),
+                ':id' => $data['id_user'] )
+        )
+        ){
+            return (1);
+        }
+        else{
+            print_r($this->dbConnexion->errorInfo());
+            print_r($q->errorInfo());
+            return(0);
+        }
+    }
+
+
+
+
+    /**
+     * Delete a row in users
      * @param Int id
      */
     function del($id){
 
-        $query = "DELETE FROM $this->accountsTable WHERE id = :id";
-        $q = $this->link->prepare($query);
+        $query = "DELETE FROM $this->users WHERE id = :id";
+        $q = $this->dbConnexion->prepare($query);
 
         if ($q->execute(array(':id' => $id ))){
             return (1);
@@ -108,33 +131,64 @@ class ModelAccounts{
 
 
     /**
-     * Get a row in accounts
-     * @param Int id
+     * Get a row in users
+     * @param Int $id
      */
     function get($id){
 
-        $query = "SELECT  `id_user`,  `company`,  `url`,  `address`,  `country_code`,  `postcode`,  `phone`,  `api_key`,  `api_secret`,  `create_time`,  `validated_time`
- 		FROM $this->accountsTable
- 		WHERE id_user = :id_user ";
-        $q = $this->link->prepare($query);
-        if ($q->execute(array(':id_user' => $id))){
+        $query = "SELECT  `id_user`,  `firstname`,  `lastname`,  `email`,  `password`,  `create_time`,  `update_time`
+ 		FROM $this->users
+ 		WHERE id_user = :id";
+        $q = $this->dbConnexion->prepare($query);
+
+        if ($q->execute(array(':id' => $id))){
+            $this->element = array();
             if($row = $q->fetch(PDO::FETCH_ASSOC)){
                 $this->element['id_user'] = $row['id_user'];
-                $this->element['company'] = $row['company'];
-                $this->element['url'] = $row['url'];
-                $this->element['address'] = $row['address'];
-                $this->element['country_code'] = $row['country_code'];
-                $this->element['postcode'] = $row['postcode'];
-                $this->element['phone'] = $row['phone'];
-                $this->element['api_key'] = $row['api_key'];
-                $this->element['api_secret'] = $row['api_secret'];
+                $this->element['firstname'] = $row['firstname'];
+                $this->element['lastname'] = $row['lastname'];
+                $this->element['email'] = $row['email'];
+                $this->element['password'] = $row['password'];
                 $this->element['create_time'] = $row['create_time'];
-                $this->element['validated_time'] = $row['validated_time'];
+                $this->element['update_time'] = $row['update_time'];
+
                 return(1);
             }
             else{
-//            print_r($this->link->errorInfo());
-//            print_r($q->errorInfo());
+                return(0);
+            }
+        }
+        else{
+            //print_r($this->dbConnexion->errorInfo());
+            //print_r($q->errorInfo());
+            return(0);
+        }
+    }
+
+
+    /**
+     * Get a row in users by mail
+     * @param styring $email
+     */
+    function getByMail($email){
+
+        $query = "SELECT  `id_user`,  `firstname`,  `lastname`,  `email`,  `password`,  `create_time`,  `update_time`
+ 		FROM $this->users
+ 		WHERE email = :email";
+        $q = $this->dbConnexion->prepare($query);
+
+        if ($q->execute(array(':email' => $email))){
+            if($row = $q->fetch(PDO::FETCH_ASSOC)){
+                $this->element['id_user'] = $row['id_user'];
+                $this->element['firstname'] = $row['firstname'];
+                $this->element['lastname'] = $row['lastname'];
+                $this->element['email'] = $row['email'];
+                $this->element['password'] = $row['password'];
+                $this->element['create_time'] = $row['create_time'];
+                $this->element['update_time'] = $row['update_time'];
+                return(1);
+            }
+            else{
                 return(0);
             }
         }
@@ -144,11 +198,57 @@ class ModelAccounts{
     }
 
 
+    /**
+     * Login
+     * @param string $email
+     * @param string $password
+     */
+    function login($email, $password){
+
+        $query = "SELECT  `id_user`,  `firstname`,  `lastname`,  `email`,  `password`,  `create_time`,  `update_time`
+                    FROM $this->users
+                    WHERE email = :email 
+                   ";
+        $q = $this->dbConnexion->prepare($query);
+        //echo password_hash($password, PASSWORD_DEFAULT);
+        if ($q->execute(array(  ':email' => $email
+            )
+        )
+        ){
+            if($row = $q->fetch(PDO::FETCH_ASSOC)){
+                $this->element['id_user'] = $row['id_user'];
+                $this->element['firstname'] = $row['firstname'];
+                $this->element['lastname'] = $row['lastname'];
+                $this->element['email'] = $row['email'];
+                $this->element['password'] = $row['password'];
+                $this->element['create_time'] = $row['create_time'];
+                $this->element['update_time'] = $row['update_time'];
+
+                if(password_verify( $password, $row['password'])){
+                    return(1);
+                }
+                else{
+                    $this->element = array();
+                    return(-2);
+                }
+
+            }
+            else{
+                //print_r($this->dbConnexion->errorInfo());
+                //print_r($q->errorInfo());
+                return(0);
+            }
+        }
+        else{
+            return(-1);
+        }
+    }
+
 
 
 
     /**
-     * Get a list of row in accounts
+     * Get a list of row in users
      * @param Int limitFrom
      * @param Int limitNumber
      * @param char orderBy
@@ -156,43 +256,36 @@ class ModelAccounts{
      */
     function getList($limitFrom, $limitNumber, $orderBy='', $order='DESC'){
 
-        $query = "SELECT  `id_user`,  `company`,  `url`,  `address`,  `country_code`,  `postcode`,  `phone`,  `api_key`,  `api_secret`,  `create_time`,  `validated_time`
-		 FROM $this->accountsTable ";
+        $query = "SELECT  `id_user`,  `firstname`,  `lastname`,  `email`,  `password`,  `create_time`,  `update_time`
+		        FROM $this->users ";
         if($orderBy){
-            $query .= "ORDER BY :orderBy :order ";
+            $query .= " ORDER BY $orderBy $order ";
         }
 
         if($limitNumber){
-            $query .= "LIMIT :limitFrom, :limitNumber ";
+            $query .= " LIMIT :limitFrom, :limitNumber ";
         }
 
-        $q = $this->link->prepare($query);
+        $q = $this->dbConnexion->prepare($query);
 
         if($limitNumber){
             $q->bindValue(':limitFrom', intval($limitFrom), PDO::PARAM_INT);
             $q->bindValue(':limitNumber', intval($limitNumber), PDO::PARAM_INT);
         }
-        if($orderBy){
-            $q->bindValue(':order', $order);
-            $q->bindValue(':orderBy', $orderBy);
-        }
+
         if ($q->execute()){
             $i=0;
             while($row = $q->fetch(PDO::FETCH_ASSOC)){
                 $this->list[$i]['id_user'] = $row['id_user'];
-                $this->list[$i]['company'] = $row['company'];
-                $this->list[$i]['url'] = $row['url'];
-                $this->list[$i]['address'] = $row['address'];
-                $this->list[$i]['country_code'] = $row['country_code'];
-                $this->list[$i]['postcode'] = $row['postcode'];
-                $this->list[$i]['phone'] = $row['phone'];
-                $this->list[$i]['api_key'] = $row['api_key'];
-                $this->list[$i]['api_secret'] = $row['api_secret'];
+                $this->list[$i]['firstname'] = $row['firstname'];
+                $this->list[$i]['lastname'] = $row['lastname'];
+                $this->list[$i]['email'] = $row['email'];
+                $this->list[$i]['password'] = $row['password'];
                 $this->list[$i]['create_time'] = $row['create_time'];
-                $this->list[$i]['validated_time'] = $row['validated_time'];
+                $this->list[$i]['update_time'] = $row['update_time'];
                 $i++;
             }
-            return($i);
+            return($this->count());
         }
         else{
             return(0);
@@ -201,19 +294,17 @@ class ModelAccounts{
 
 
 
-
-
     /**
-     * Count row in accounts
+     * Count row in users
      */
     function count(){
 
         $query = "SELECT COUNT(*) AS nbRows
-		 FROM $this->accountsTable";
-        $q = $this->link->prepare($query);
+		 FROM $this->users";
+        $q = $this->dbConnexion->prepare($query);
 
         if ($results = $q->execute()){
-            if($row = $results->fetch(PDO::FETCH_ASSOC)){
+            if($row = $q->fetch(PDO::FETCH_ASSOC)){
                 return($row[nbRows]);
             }
         }
@@ -222,8 +313,4 @@ class ModelAccounts{
         }
     }
 
-
-
 }
-
-?>
