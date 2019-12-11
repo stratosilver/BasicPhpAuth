@@ -3,7 +3,7 @@ Framework agnostic basic php class to manage users accounts, register, login, up
 
 Here is the table structure
 
-`
+```
 CREATE TABLE users
   id_user int(11) NOT NULL,
   firstname varchar(100) NOT NULL,
@@ -13,11 +13,11 @@ CREATE TABLE users
   create_time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   update_time timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-`
+```
 
 ##Usage
 ###Check login/password 
-`
+```
 $user = new ModelUsers($pdoLink);
 
 if($user->login('login', 'password')){
@@ -27,14 +27,14 @@ if($user->login('login', 'password')){
 else{
     echo 'Wrong login or password';
 }
-`
+```
 ###Get infos about a user
-`
+```
 $user->get(5);
 print_r($user->profile);
-`
+```
 ###Get users list
-`
+```
 $user->getList(0,0, 'name', 'ASC');
 print_r($user->list);
-`
+```
