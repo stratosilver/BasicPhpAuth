@@ -1,5 +1,3 @@
-[![Software License][icon-license]][link-license]
-
 # BasicPhpAccounts
 Framework agnostic basic php class to manage users accounts, register, login, update, password encryption  etc...  
 ### Security
