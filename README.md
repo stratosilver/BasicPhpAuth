@@ -8,14 +8,14 @@ PHP 5 >= 5.5.0, PHP 7
 
 ## Table structure
 ```
-CREATE TABLE users
-  id_user int(11) NOT NULL,
-  firstname varchar(100) NOT NULL,
-  lastname varchar(100) NOT NULL,
-  email varchar(255) NOT NULL,
-  password varchar(255) NOT NULL,
-  create_time timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  update_time timestamp NULL DEFAULT current_timestamp()
+CREATE TABLE `users` (
+  `id_user` int(11) NOT NULL,
+  `firstname` varchar(100) NOT NULL,
+  `lastname` varchar(100) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `create_time` datetime NOT NULL,
+  `update_time` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
 See ```table.sql``` for the complete structure including indexes
