@@ -1,8 +1,8 @@
 # BasicPhpAccounts
 Framework agnostic basic php class to manage users accounts, register, login, update, password encryption  etc...  
-###Security
+### Security
 password_hash() and password_verify() function are used to encrypt and check the user password.
-##Table structure
+## Table structure
 
 ```
 CREATE TABLE users
@@ -17,14 +17,14 @@ CREATE TABLE users
 ```
 See table.sql for the complete structure including indexes
 
-##Usage
-###Instantiate the class 
+## Usage
+### Instantiate the class 
 You must pass a PDO connection as a parameter when you instantiate the class
 ```
 $user = new ModelUsers($pdoLink);
 ```
 
-###Check login/password 
+### Check login/password 
 ```
 $user = new ModelUsers($pdoLink);
 
@@ -36,24 +36,24 @@ else{
     echo 'Wrong login or password';
 }
 ```
-###Get infos about a user
+### Get infos about a user
    ```
    $user->get(5);
    print_r($user->profile);
    ```
-###Get infos about a user by his e-mail
+### Get infos about a user by his e-mail
 ```
 $user->getByMail('hello@kidnoize.be');
 print_r($user->profile);
 ```
 
-###Get users list
+### Get users list
 ```
 $user->getList(0,0, 'name', 'ASC');
 print_r($user->list);
 ```
 
-###Add a user
+### Add a user
 ```
 $user->profile['firstname'] = 'Kid';
 $user->profile['lastname'] = 'Noize';
@@ -62,8 +62,9 @@ $user->profile['password'] = 'houbahouba';
 
 $user->add();
 ```
+Return -2 if the e-mail exists
 
-###Update a user
+### Update a user
 ```
 $user->profile['firstname'] = 'Kid';
 $user->profile['lastname'] = 'Noize';
@@ -72,8 +73,9 @@ $user->profile['id'] = 5;
 
 $user->update();
 ```
+Return -2 if the e-mail exists
 
-###Update password
+### Update password
 ```
 $user->profile['password'] = 'houbahoubazitoko';
 $user->profile['id'] = 5;
@@ -81,7 +83,7 @@ $user->profile['id'] = 5;
 $user->updatePassword();
 ```
 
-###Delete a user
+### Delete a user
 ```
 $user->del(5);
 ```
