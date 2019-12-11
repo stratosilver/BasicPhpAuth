@@ -308,7 +308,7 @@ class ModelUsers
 
         if ($results = $q->execute()) {
             if ($row = $q->fetch(PDO::FETCH_ASSOC)) {
-                return ($row[nbRows]);
+                return ($row['nbRows']);
             }
         } else {
             return (0);
