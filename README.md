@@ -1,7 +1,11 @@
+[![Software License][icon-license]][link-license]
+
 # BasicPhpAccounts
 Framework agnostic basic php class to manage users accounts, register, login, update, password encryption  etc...  
 ### Security
 password_hash() and password_verify() function are used to encrypt and check the user password.
+PHP 5 >= 5.5.0, PHP 7 
+
 ## Table structure
 
 ```
