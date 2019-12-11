@@ -1,11 +1,12 @@
-# BasicPhpAccounts
-Framework agnostic basic php class to manage users accounts, register, login, update, password encryption  etc...  
-### Security
+# BasicPhpAuth
+Basic php class, Framework agnostic that manage users accounts, register, login, update, password encryption  etc...
+
+## Security
 password_hash() and password_verify() function are used to encrypt and check the user password.
+
 PHP 5 >= 5.5.0, PHP 7 
 
 ## Table structure
-
 ```
 CREATE TABLE users
   id_user int(11) NOT NULL,
@@ -17,7 +18,7 @@ CREATE TABLE users
   update_time timestamp NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 ```
-See table.sql for the complete structure including indexes
+See ```table.sql``` for the complete structure including indexes
 
 ## Usage
 ### Instantiate the class 
