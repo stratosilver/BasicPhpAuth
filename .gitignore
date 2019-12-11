@@ -2,7 +2,8 @@ dist/
 vendor/
 .gh_token
 *.min.*
-
+test.php
+index.php
 *.log
 /.idea/
 /.htaccess
