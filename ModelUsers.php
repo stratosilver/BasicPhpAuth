@@ -1,6 +1,6 @@
 <?php
 /**
- *	Manage the table users
+ *	Manage the users table
  */
 
 class ModelUsers{
@@ -11,17 +11,19 @@ class ModelUsers{
 
     /**
      * Constructor
+     * @param pdoConnexion $dbConnexion
      */
     public function __construct($dbConnexion){
         $this->users = '`users`';
         $this->dbConnexion = $dbConnexion;
-        $this->element = array();
+        $this->profile = array();
         $this->list = array();
     }
 
     /**
      * Add a row in users
      * @param array data
+     * @return int 
      */
     function add($data){
         //print_r($data);
@@ -53,6 +55,7 @@ class ModelUsers{
     /**
      * Update a row in users
      * @param array data
+     * @return int
      */
     function update($data){
 
@@ -83,6 +86,7 @@ class ModelUsers{
     /**
      * Update password for one row
      * @param array data
+     * @return int
      */
     function updatePassword($data){
 
@@ -113,6 +117,7 @@ class ModelUsers{
     /**
      * Delete a row in users
      * @param Int id
+     * @return int
      */
     function del($id){
 
@@ -133,24 +138,25 @@ class ModelUsers{
     /**
      * Get a row in users
      * @param Int $id
+     * @return int
      */
     function get($id){
-
+        $this->profile = array();
+        
         $query = "SELECT  `id_user`,  `firstname`,  `lastname`,  `email`,  `password`,  `create_time`,  `update_time`
  		FROM $this->users
  		WHERE id_user = :id";
         $q = $this->dbConnexion->prepare($query);
 
         if ($q->execute(array(':id' => $id))){
-            $this->element = array();
             if($row = $q->fetch(PDO::FETCH_ASSOC)){
-                $this->element['id_user'] = $row['id_user'];
-                $this->element['firstname'] = $row['firstname'];
-                $this->element['lastname'] = $row['lastname'];
-                $this->element['email'] = $row['email'];
-                $this->element['password'] = $row['password'];
-                $this->element['create_time'] = $row['create_time'];
-                $this->element['update_time'] = $row['update_time'];
+                $this->profile['id_user'] = $row['id_user'];
+                $this->profile['firstname'] = $row['firstname'];
+                $this->profile['lastname'] = $row['lastname'];
+                $this->profile['email'] = $row['email'];
+                $this->profile['password'] = $row['password'];
+                $this->profile['create_time'] = $row['create_time'];
+                $this->profile['update_time'] = $row['update_time'];
 
                 return(1);
             }
@@ -169,6 +175,7 @@ class ModelUsers{
     /**
      * Get a row in users by mail
      * @param styring $email
+     * @return int
      */
     function getByMail($email){
 
@@ -179,13 +186,13 @@ class ModelUsers{
 
         if ($q->execute(array(':email' => $email))){
             if($row = $q->fetch(PDO::FETCH_ASSOC)){
-                $this->element['id_user'] = $row['id_user'];
-                $this->element['firstname'] = $row['firstname'];
-                $this->element['lastname'] = $row['lastname'];
-                $this->element['email'] = $row['email'];
-                $this->element['password'] = $row['password'];
-                $this->element['create_time'] = $row['create_time'];
-                $this->element['update_time'] = $row['update_time'];
+                $this->profile['id_user'] = $row['id_user'];
+                $this->profile['firstname'] = $row['firstname'];
+                $this->profile['lastname'] = $row['lastname'];
+                $this->profile['email'] = $row['email'];
+                $this->profile['password'] = $row['password'];
+                $this->profile['create_time'] = $row['create_time'];
+                $this->profile['update_time'] = $row['update_time'];
                 return(1);
             }
             else{
@@ -202,33 +209,35 @@ class ModelUsers{
      * Login
      * @param string $email
      * @param string $password
+     * @return int
      */
     function login($email, $password){
-
+        $this->profile = array();
+        
         $query = "SELECT  `id_user`,  `firstname`,  `lastname`,  `email`,  `password`,  `create_time`,  `update_time`
                     FROM $this->users
                     WHERE email = :email 
                    ";
         $q = $this->dbConnexion->prepare($query);
-        //echo password_hash($password, PASSWORD_DEFAULT);
+        
         if ($q->execute(array(  ':email' => $email
             )
         )
         ){
             if($row = $q->fetch(PDO::FETCH_ASSOC)){
-                $this->element['id_user'] = $row['id_user'];
-                $this->element['firstname'] = $row['firstname'];
-                $this->element['lastname'] = $row['lastname'];
-                $this->element['email'] = $row['email'];
-                $this->element['password'] = $row['password'];
-                $this->element['create_time'] = $row['create_time'];
-                $this->element['update_time'] = $row['update_time'];
+                $this->profile['id_user'] = $row['id_user'];
+                $this->profile['firstname'] = $row['firstname'];
+                $this->profile['lastname'] = $row['lastname'];
+                $this->profile['email'] = $row['email'];
+                $this->profile['password'] = $row['password'];
+                $this->profile['create_time'] = $row['create_time'];
+                $this->profile['update_time'] = $row['update_time'];
 
                 if(password_verify( $password, $row['password'])){
                     return(1);
                 }
                 else{
-                    $this->element = array();
+                    $this->profile = array();
                     return(-2);
                 }
 
@@ -253,9 +262,11 @@ class ModelUsers{
      * @param Int limitNumber
      * @param char orderBy
      * @param Int order
+     * @return int
      */
     function getList($limitFrom, $limitNumber, $orderBy='', $order='DESC'){
-
+        $this->list = array();
+        
         $query = "SELECT  `id_user`,  `firstname`,  `lastname`,  `email`,  `password`,  `create_time`,  `update_time`
 		        FROM $this->users ";
         if($orderBy){
