@@ -1,5 +1,6 @@
 dist/
 vendor/
+composer.phar
 .gh_token
 *.min.*
 test.php

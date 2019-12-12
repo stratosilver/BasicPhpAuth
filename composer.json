@@ -1,0 +1,7 @@
+{
+  "name": "digitalway/BasicPhpAuth",
+  "description": "One file pure PHP authentication class to manages users accounts, register, login, update etc...",
+  "require": {
+    "php": "^5.5"
+  }
+}
