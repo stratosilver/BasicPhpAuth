@@ -4,7 +4,7 @@
   "description": "One file pure PHP authentication class to manages users accounts, register, login, update etc...",
   "keywords": ["authentication", "class", "registration", "account", "login-system", "login", "agnostic", "php", "users" ],
   "homepage": "https://github.com/stratosilver/BasicPhpAuth",
-  "license": "CC0 1.0 Universal",
+  "license": "CC0-1.0",
   "authors": [
     {
       "name": "Eddy Tilmant",
