@@ -1,7 +1,19 @@
 {
   "name": "digitalway/basic-php-auth",
+  "type": "library",
   "description": "One file pure PHP authentication class to manages users accounts, register, login, update etc...",
+  "keywords": ["authentication", "class", "registration", "account", "login-system", "login", "agnostic", "php", "users" ],
+  "homepage": "https://github.com/stratosilver/BasicPhpAuth",
+  "license": "CC0 1.0 Universal",
+  "authors": [
+    {
+      "name": "Eddy Tilmant",
+      "email": "eddy.tilmant@gmail.com",
+      "homepage": "http://digitalway.be",
+      "role": "Developer"
+    }
+  ],
   "require": {
-    "php": "^5.5"
+    "php": ">=5.5"
   }
 }
