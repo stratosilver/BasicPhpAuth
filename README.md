@@ -6,6 +6,22 @@ password_hash() and password_verify() function are used to encrypt and check the
 
 PHP 5 >= 5.5.0, PHP 7 
 
+## Install
+#### Download
+Download the files ```ModelUsers.php``` and  ```table.sql``` 
+ 
+execute ```table.sql``` in your DB
+
+#### Or use Composer
+```
+{
+    ...
+    "require": {
+        "digitalway/basic-php-auth": "1.*"
+    }
+}
+``` 
+
 ## Table structure
 ```
 CREATE TABLE `users` (
